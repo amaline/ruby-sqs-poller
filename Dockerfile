@@ -8,7 +8,7 @@ RUN echo "$HOME";\
     gem install json ;\
     mkdir .aws
 
-ADD ./credentials /root/.aws/
+#ADD ./credentials /root/.aws/
 ADD ./certs /usr/local/share/ca-certificates/
 RUN update-ca-certificates
 
