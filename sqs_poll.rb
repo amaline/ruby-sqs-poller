@@ -5,12 +5,20 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-endpoint = URI.parse "https://hooks.slack.com/services/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"
+q	= "slack_receive_queue"
+useast 	= "us-east-1"
+
+if ENV['SLACK_URL'].nil?
+  fail "SLACK_URL environmental variable must be set"
+end
+
+endpoint = URI.parse ENV['SLACK_URL']
 #endpoint = URI.parse "http://requestb.in/108ulae1"
 
-q="slack_receive_queue"
-useast = "us-east-1"
-ENV['AWS_REGION'] = useast
+
+if ENV['AWS_REGION'].nil?
+	ENV['AWS_REGION'] = useast
+end
 
 sqs = Aws::SQS::Client.new
 resp =sqs.list_queues()
