@@ -1,0 +1,18 @@
+machine:
+   services:
+      - docker
+
+dependencies:
+   override:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker build -t amaline/ruby-sqs-poller . 
+
+test:
+   override:
+      - docker inspect amaline/ruby-sqs-poller
+
+deployment:
+  hub:
+   branch: master
+   commands:
+    - docker push amaline/ruby-sqs-poller
