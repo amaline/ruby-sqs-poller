@@ -41,31 +41,32 @@ poller.poll do |msg|
  # no infinite loops of messages by filtering user_id for USLACKBOT
  # only messages that begin with %% will be considered commands
 
- if parsed["user_id"] != "USLACKBOT" # && parsed["text"] =~ /^%%/	
+ if parsed["user_id"] != "USLACKBOT"
 
-   payload={"text":"message received {#{parsed['text']}}"}
 
    http = Net::HTTP.new(endpoint.host,endpoint.port)
-   http.use_ssl = true
-   http.ssl_version = :TLSv1
+
+   if endpoint.scheme == "https"
+      http.use_ssl = true
+      http.ssl_version = :TLSv1
+   end
 
    req = Net::HTTP::Post.new(endpoint.request_uri)
-   #req.set_form_data ( {"payload" => payload.to_json } )
-   req.body=payload.to_json
+   req.body=msg.body
    
-   #req["Content-Type"] = 'application/x-www-form-urlencoded'
    req["Content-Type"] = 'application/json'
 
-   if ENV['X_AUTH_TOKEN'].nil?
+   if ! ENV['X_AUTH_TOKEN'].nil?
+        puts "setting auth token to #{ENV['X_AUTH_TOKEN']}"
 	req["X-Auth-Token"] = ENV['X_AUTH_TOKEN']
    end
 
    resp=http.request(req)
    case resp
       when Net::HTTPSuccess
-         puts "acknowledgement sent"
+         puts "message forwarded [ #{parsed['text']} ]"
       else
-         fail "There was an error when posting #{payload}, the error was #{resp.body}"
+         fail "There was an error when posting #{msg.body}, the error was #{resp.body}"
    end 
  end
 
