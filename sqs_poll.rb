@@ -51,7 +51,7 @@ poller.poll do |msg|
 
    req = Net::HTTP::Post.new(endpoint.request_uri)
    #req.set_form_data ( {"payload" => payload.to_json } )
-   req.body (payload.to_json)
+   req.body=payload.to_json
    
    #req["Content-Type"] = 'application/x-www-form-urlencoded'
    req["Content-Type"] = 'application/json'
